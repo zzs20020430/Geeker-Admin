@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs-box">
+  <div class="tabs-box" @mousedown="handleMiddleClick">
     <div class="tabs-menu">
       <el-tabs v-model="tabsMenuValue" type="card" @tab-click="tabClick" @tab-remove="tabRemove">
         <el-tab-pane v-for="item in tabsMenuList" :key="item.path" :label="item.title" :name="item.path" :closable="item.close">
@@ -101,8 +101,22 @@ const tabClick = (tabItem: TabsPaneContext) => {
 const tabRemove = (fullPath: TabPaneName) => {
   tabStore.removeTabs(fullPath as string, fullPath == route.fullPath);
 };
+
+// Handle middle click to close tab
+const handleMiddleClick = (event: MouseEvent) => {
+  if (event.button === 1) {
+    const target = event.target as HTMLElement;
+    const tabItem = target.closest(".el-tabs__item");
+    if (tabItem) {
+      const tabName = tabItem.getAttribute("id")?.split("-")[1];
+      if (tabName) {
+        tabRemove(tabName as TabPaneName);
+      }
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
-@import "./index.scss";
+@import "./index";
 </style>
