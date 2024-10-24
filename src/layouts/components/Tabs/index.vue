@@ -112,5 +112,5 @@ const handleClose = (tabMenuItem: TabsMenuProps) => {
 </script>
 
 <style scoped lang="scss">
-@import "./index";
+@import "./index.scss";
 </style>
