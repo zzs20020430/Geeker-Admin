@@ -1,13 +1,15 @@
 <template>
-  <div class="tabs-box" @mousedown="handleMiddleClick">
+  <div class="tabs-box">
     <div class="tabs-menu">
       <el-tabs v-model="tabsMenuValue" type="card" @tab-click="tabClick" @tab-remove="tabRemove">
         <el-tab-pane v-for="item in tabsMenuList" :key="item.path" :label="item.title" :name="item.path" :closable="item.close">
           <template #label>
-            <el-icon v-if="item.icon && tabsIcon" class="tabs-icon">
-              <component :is="item.icon"></component>
-            </el-icon>
-            {{ item.title }}
+            <div class="tab-label-wrap" @click.middle="handleClose(item as TabsMenuProps)">
+              <el-icon class="tabs-icon" v-show="item.icon && tabsIcon">
+                <component :is="item.icon"></component>
+              </el-icon>
+              {{ item.title }}
+            </div>
           </template>
         </el-tab-pane>
       </el-tabs>
@@ -25,6 +27,7 @@ import { useTabsStore } from "@/stores/modules/tabs";
 import { useAuthStore } from "@/stores/modules/auth";
 import { TabsPaneContext, TabPaneName } from "element-plus";
 import MoreButton from "./components/MoreButton.vue";
+import { TabsMenuProps } from "@/stores/interface";
 
 const route = useRoute();
 const router = useRouter();
@@ -102,18 +105,9 @@ const tabRemove = (fullPath: TabPaneName) => {
   tabStore.removeTabs(fullPath as string, fullPath == route.fullPath);
 };
 
-// Handle middle click to close tab
-const handleMiddleClick = (event: MouseEvent) => {
-  if (event.button === 1) {
-    const target = event.target as HTMLElement;
-    const tabItem = target.closest(".el-tabs__item");
-    if (tabItem) {
-      const tabName = tabItem.getAttribute("id")?.split("-")[1];
-      if (tabName) {
-        tabRemove(tabName as TabPaneName);
-      }
-    }
-  }
+//Click.middle to Rmove Tab
+const handleClose = (tabMenuItem: TabsMenuProps) => {
+  if (tabMenuItem.close) tabRemove(tabMenuItem.path);
 };
 </script>
 
